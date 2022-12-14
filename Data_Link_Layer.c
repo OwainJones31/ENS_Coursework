@@ -30,36 +30,16 @@ void LLC_Net_Interface(uint8_t Dest_MAC, uint8_t Packet_Data[], uint8_t Net_Leng
       Find_Check(Frames, Store, L1, 1); 
       Frames[L1].checksum[0] = Get_Ints(Store,1);
       Frames[L1].checksum[1] = Get_Ints(Store,9);
-      Print_Frame(Frames, L1);
-      printf("\n");
       Add_Flags(Frames, Store, L1, Flag_Byte, Esc_Byte);
       for(Bytes_Left=0; Bytes_Left<22; Bytes_Left++){
          printf("%d ", Store[Bytes_Left]);
-         /*Store[Bytes_Left] = 0;*/
+         Store[Bytes_Left] = 0;
       }
-      printf("\n");
-
-      Receiving(&MAC, Store, &Packet_Len); 
    }
    free(Frames);
    free(Store);
 }
 
-void Print_Frame(Frame_Struct * Frames, uint8_t Frame_Num){
-   uint8_t L1;
-   printf("\n%d ",Frames[Frame_Num].Header);
-   printf("%d ",Frames[Frame_Num].Control[0]);
-   printf("%d ",Frames[Frame_Num].Control[1]);
-   printf("%d ",Frames[Frame_Num].Source_MAC);
-   printf("%d ",Frames[Frame_Num].Dest_MAC);
-   printf("%d ",Frames[Frame_Num].Length);
-   for(L1=0; L1<Frames[Frame_Num].Length; L1++){
-      printf("%d ",Frames[Frame_Num].NET_Packet[L1]);
-   }
-   printf("%d ",Frames[Frame_Num].checksum[0]);
-   printf("%d ",Frames[Frame_Num].checksum[1]);
-   printf("%d ",Frames[Frame_Num].Footer);
-}
 
 void Packet_Breakdown(Frame_Struct * Frames, uint8_t * Packet_Data, uint8_t Packet_Num, uint8_t Bytes_Left){
    uint8_t L1, L2, Curr_Byte;
@@ -115,20 +95,6 @@ void Find_Check(Frame_Struct * Frames, uint8_t * CRC_Sum, uint8_t Frame_Num, uin
       }
    }
    free(Frame_Bit_Val);
-}
-
-void Add_Space(uint8_t Count){
-   uint8_t L1 = 0;
-   for(L1 = 0; L1 <Count; L1++){
-      printf("| ");
-   }
-}
-void Equal(uint8_t Count){
-   uint8_t L1 = 0;
-   for(L1 = 0; L1 <=Count; L1++){
-      printf("--");
-   }
-   printf("\n");
 }
 
 void Calc_CRC(uint8_t * Bit_Value, uint8_t * CRC_Sum, uint8_t Length){
@@ -312,21 +278,17 @@ void MAC_LLC_Interface(Frame_Struct * Frames, uint8_t * Rec_Data, uint8_t Frame_
          }
          Frames[Frame_Num].checksum[0] = Rec_Data[Rec_Data[5]+6];
          Frames[Frame_Num].checksum[1] = Rec_Data[Rec_Data[5]+7];
-         Print_Frame(Frames,Frame_Num);
 
          Find_Check(Frames, CRC_Sum, Frame_Num, 0);
 
-         printf("\n");
          L2 = 0;
          for(L1 = 1; L1 <17; L1++){
-            printf("%d ", CRC_Sum[L1]);
             if(CRC_Sum[L1] == 1){
                L2 = 1;
             }
          }
          free(CRC_Sum);
          if(L2 == 1){
-            printf("BBB");
             Frames[Frame_Num].Control[0] = 0;
             Frames[Frame_Num].Control[1] = 0;
             Frames[Frame_Num].Source_MAC = 0;
@@ -363,16 +325,12 @@ int main() {
    uint8_t MAC = 2, Len = 8;
    uint8_t Pac[18] = {1,2,3,4,5,125,7,8,9,10,11,12,13,14,15,16,17,18};
 
-   /*uint8_t Rec_Data[30]= {126, 2, 0, 1, 2, 8, 1, 2, 3, 4, 5, 125, 125, 7, 8, 200, 233, 126};
-   uint8_t  Packet_Len = 0, L1;*/
+   uint8_t Rec_Data[30]= {126, 2, 0, 1, 2, 8, 1, 2, 3, 4, 5, 125, 125, 7, 8, 200, 233, 126};
+   uint8_t  Packet_Len = 0, L1;
 
    LLC_Net_Interface(MAC, Pac, Len);
 
-   /*Receiving(&MAC, Rec_Data, &Packet_Len);
-   printf("\nAddress: %d, Length: %d Data: ", MAC, Packet_Len);
-   for (L1= 0;  L1<Packet_Len ; L1++){
-      printf("%d ", Rec_Data[L1]);
-   }*/
+   Receiving(&MAC, Rec_Data, &Packet_Len);
 
    return 0;
 }
