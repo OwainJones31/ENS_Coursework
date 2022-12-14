@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
@@ -36,7 +35,5 @@ uint8_t Get_Ints(uint8_t * Bit_Value, uint8_t Count);
 void Receiving(uint8_t * MAC_Address, uint8_t * NET_Packet, uint8_t * Packet_Len);
 void MAC_LLC_Interface(Frame_Struct * Frames, uint8_t * Rec_Data, uint8_t Frame_Num, uint8_t * Source);
 void Remove_Flags(uint8_t * In_Frame, uint8_t Length, uint8_t Flag, uint8_t Esc);
-
-void Print_Frame(Frame_Struct * Frames, uint8_t Frame_Num);
 
 #endif
