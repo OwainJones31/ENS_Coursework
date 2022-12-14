@@ -225,7 +225,6 @@ void Receiving(uint8_t * MAC_Address, uint8_t * Full_Packet, uint8_t * Packet_Le
 
       if(Full_Packet[0]== 126){
          MAC_LLC_Interface(Frames, Full_Packet, L1, &L2);
-         Print_Frame(Frames,L1);
          L1 += 1;
       }
 
@@ -326,7 +325,7 @@ int main() {
    uint8_t Pac[18] = {1,2,3,4,5,125,7,8,9,10,11,12,13,14,15,16,17,18};
 
    uint8_t Rec_Data[30]= {126, 2, 0, 1, 2, 8, 1, 2, 3, 4, 5, 125, 125, 7, 8, 200, 233, 126};
-   uint8_t  Packet_Len = 0, L1;
+   uint8_t  Packet_Len = 0;
 
    LLC_Net_Interface(MAC, Pac, Len);
 
